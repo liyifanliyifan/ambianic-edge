@@ -4,6 +4,7 @@
 # It is also shipped with updates of the ambianic-edge binary. #
 #################################################################
 version: '2021.11.11'
+version: '2022.5.28'
 
 # path to the data directory
 data_dir: ./data
@@ -88,6 +89,12 @@ ai_models:
       tflite: /opt/ambianic-edge/ai_models/posenet_mobilenet_v1_100_257x257_multi_kpt_stripped.tflite
       edgetpu: /opt/ambianic-edge/ai_models/posenet_mobilenet_v1_075_721_1281_quant_decoder_edgetpu.tflite
     labels: /opt/ambianic-edge/ai_models/pose_labels.txt
+  fire_detection:
+    model:
+      tflite: /opt/ambianic-edge/ai_models/lite_fire_detection_model.tflite
+    
+    
+    
 
 # A named pipeline defines an ordered sequence of operations
 # such as reading from a data source, AI model inference, saving samples and others.
@@ -115,3 +122,9 @@ pipelines:
 #        notify: # notify a thirdy party service
 #          providers:
 #            - alert_fall
+     -  detect_fire: # look for fire
+         ai_model: fire_detection
+         confidence_threshold: 0.6
+     -  save_detections: # save samples from the inference results
+         positive_interval: 10
+         idle_interval: 600
